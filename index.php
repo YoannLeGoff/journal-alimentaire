@@ -22,6 +22,7 @@ const DAILY_SCORE_WEIGHTS = [
     'snack_afternoon' => 10,
     'evening_meal' => 20,
     'snack_evening' => 12,
+    'physical_activity' => 0,
     'notes' => 0,
 ];
 
@@ -505,6 +506,7 @@ try {
                 'snack_afternoon' => 'Collation de l’après-midi',
                 'evening_meal' => 'Repas du soir',
                 'snack_evening' => 'Collation du soir',
+                'physical_activity' => 'Activité Physique',
                 'notes' => 'Note',
             ];
             $weekUpdates = [];
@@ -570,6 +572,7 @@ try {
                 'snack_afternoon' => 'Collation de l’après-midi',
                 'evening_meal' => 'Repas du soir',
                 'snack_evening' => 'Collation du soir',
+                'physical_activity' => 'Activité Physique',
                 'notes' => 'Note',
             ];
             $entry = [];
@@ -660,6 +663,7 @@ $mealFields = [
     'snack_afternoon' => 'Collation de l’après-midi',
     'evening_meal' => 'Repas du soir',
     'snack_evening' => 'Collation du soir',
+    'physical_activity' => 'Activité Physique',
     'notes' => 'Note',
 ];
 $scoreWeights = DAILY_SCORE_WEIGHTS;
@@ -975,6 +979,8 @@ $homeUrl = $sharedView
             line-height: 1.4;
         }
         .field.notes textarea { min-height: 58px; }
+        .sport-icon { width: 17px; height: 17px; flex: 0 0 17px; vertical-align: middle; }
+        .field label.sport-label, .render-meal h3.sport-label { display: flex; align-items: center; gap: 6px; }
         .day-form .button { width: 100%; min-height: 39px; padding: 7px 10px; font-size: .9rem; }
         .auth-card {
             width: min(460px, 100%);
@@ -1419,7 +1425,7 @@ $homeUrl = $sharedView
                                     <?php foreach ($mealFields as $key => $label): ?>
                                         <?php $value = isset($entry[$key]) && is_string($entry[$key]) ? trim($entry[$key]) : ''; ?>
                                         <section class="render-meal">
-                                            <h3><?= h($label) ?></h3>
+                                            <h3<?= $key === 'physical_activity' ? ' class="sport-label"' : '' ?>><?php if ($key === 'physical_activity'): ?><svg class="sport-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="15.5" cy="4.5" r="2"/><path d="m13 8-3 3 3.5 2.5 2-3 3 2M10 11l-4-1-3 3m10 .5-2.5 3.5 2 4m-2-7.5L8 17l-4 1"/></svg><?php endif; ?><?= h($label) ?></h3>
                                             <p><?= $value !== '' ? nl2br(h($value)) : '—' ?></p>
                                         </section>
                                     <?php endforeach; ?>
@@ -1442,7 +1448,7 @@ $homeUrl = $sharedView
                             <?php foreach ($mealFields as $key => $label): ?>
                                 <?php $value = isset($entry[$key]) && is_string($entry[$key]) ? $entry[$key] : ''; ?>
                                 <div class="field<?= $key === 'notes' ? ' notes' : '' ?>">
-                                    <label for="<?= h($key . '-' . $date) ?>"><?= h($label) ?></label>
+                                    <label<?= $key === 'physical_activity' ? ' class="sport-label"' : '' ?> for="<?= h($key . '-' . $date) ?>"><?php if ($key === 'physical_activity'): ?><svg class="sport-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="15.5" cy="4.5" r="2"/><path d="m13 8-3 3 3.5 2.5 2-3 3 2M10 11l-4-1-3 3m10 .5-2.5 3.5 2 4m-2-7.5L8 17l-4 1"/></svg><?php endif; ?><?= h($label) ?></label>
                                     <textarea id="<?= h($key . '-' . $date) ?>" name="<?= h($key) ?>" data-score-weight="<?= $scoreWeights[$key] ?>" maxlength="20000"><?= h($value) ?></textarea>
                                 </div>
                             <?php endforeach; ?>
