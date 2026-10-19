@@ -848,10 +848,13 @@ $homeUrl = $sharedView
         .score-fill { display: block; height: 100%; border-radius: inherit; background: var(--green); transition: width .15s ease; }
         .report-legend { display: flex; flex-wrap: wrap; gap: 12px 20px; margin: 0 0 16px; color: var(--muted); font-size: .9rem; }
         .report-legend-item { display: inline-flex; align-items: center; gap: 7px; }
+        .report-activity-legend { display: flex; flex-wrap: wrap; gap: 10px 18px; margin: -8px 0 16px; color: var(--muted); font-size: .85rem; }
+        .report-activity-legend .report-dot { background: #68766e; }
         .report-period-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin: 0 0 16px; }
         .report-period-label { margin: 0 5px 0 0; color: var(--muted); font-size: .9rem; }
         .report-period-controls .button[aria-current="true"] { border-color: var(--green); background: var(--accent); color: var(--green-dark); font-weight: 700; }
-        .report-dot { display: inline-block; width: 12px; height: 12px; flex: 0 0 12px; border-radius: 50%; background: var(--score-color); }
+        .report-dot { display: inline-block; width: 14px; height: 14px; flex: 0 0 14px; border: 2px solid #aeb8b1; border-radius: 50%; background: var(--score-color); }
+        .report-day.activity-filled { border-color: #00a3ff; }
         .score-low { --score-color: #c7463e; }
         .score-medium { --score-color: #df8a16; }
         .score-high { --score-color: #34834f; }
@@ -887,6 +890,7 @@ $homeUrl = $sharedView
             align-items: center;
             justify-content: center;
             justify-self: center;
+            border: 2px solid #aeb8b1;
             border-radius: 50%;
             color: var(--ink);
             font-size: .8rem;
@@ -1310,6 +1314,10 @@ $homeUrl = $sharedView
                     <span class="report-legend-item"><span class="report-dot score-medium"></span>60–89 %</span>
                     <span class="report-legend-item"><span class="report-dot score-high"></span>90–100 %</span>
                 </div>
+                <div class="report-activity-legend" aria-label="Légende de l’activité physique">
+                    <span class="report-legend-item"><span class="report-dot" aria-hidden="true"></span>Bordure grise : activité non renseignée</span>
+                    <span class="report-legend-item"><span class="report-dot activity-filled" aria-hidden="true"></span>Bordure bleue : activité renseignée</span>
+                </div>
                 <?php
                     $monthNames = [
                         'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
@@ -1359,12 +1367,19 @@ $homeUrl = $sharedView
                                         $scoreClass = $calendarScore < 60
                                             ? 'score-low'
                                             : ($calendarScore < 90 ? 'score-medium' : 'score-high');
+                                        $activityFilled = isset($calendarEntry['physical_activity'])
+                                            && is_string($calendarEntry['physical_activity'])
+                                            && trim($calendarEntry['physical_activity']) !== '';
+                                        $activityClass = $activityFilled ? 'activity-filled' : 'activity-empty';
+                                        $activityLabel = $activityFilled
+                                            ? 'activité physique renseignée'
+                                            : 'activité physique non renseignée';
                                         $calendarLabel = $dayNumber . ' ' . $monthNames[$monthNumber - 1] . ' ' . $monthYear;
                                     ?>
                                     <?php if ($calendarDate <= $today): ?>
-                                        <a class="report-day <?= $scoreClass ?>" href="?view=day&amp;day=<?= h($calendarDate) ?>" title="<?= h($calendarLabel . ' — ' . $calendarScore . ' %') ?>" aria-label="<?= h($calendarLabel . ', score ' . $calendarScore . ' %, modifier la journée') ?>"><?= $dayNumber ?></a>
+                                        <a class="report-day <?= $scoreClass ?> <?= $activityClass ?>" href="?view=day&amp;day=<?= h($calendarDate) ?>" title="<?= h($calendarLabel . ' — ' . $calendarScore . ' % — ' . $activityLabel) ?>" aria-label="<?= h($calendarLabel . ', score ' . $calendarScore . ' %, ' . $activityLabel . ', modifier la journée') ?>"><?= $dayNumber ?></a>
                                     <?php else: ?>
-                                        <span class="report-day future" aria-label="<?= h($calendarLabel) ?>"><?= $dayNumber ?></span>
+                                        <span class="report-day future <?= $activityClass ?>" aria-label="<?= h($calendarLabel . ', ' . $activityLabel) ?>"><?= $dayNumber ?></span>
                                     <?php endif; ?>
                                 <?php endfor; ?>
                             </div>
