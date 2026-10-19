@@ -854,7 +854,7 @@ $homeUrl = $sharedView
         .report-period-label { margin: 0 5px 0 0; color: var(--muted); font-size: .9rem; }
         .report-period-controls .button[aria-current="true"] { border-color: var(--green); background: var(--accent); color: var(--green-dark); font-weight: 700; }
         .report-dot { display: inline-block; width: 14px; height: 14px; flex: 0 0 14px; border: 2px solid #aeb8b1; border-radius: 50%; background: var(--score-color); }
-        .report-day.activity-filled { border-color: #00a3ff; }
+        .report-day.activity-filled, .report-dot.activity-filled { border-color: #00a3ff; }
         .score-low { --score-color: #c7463e; }
         .score-medium { --score-color: #df8a16; }
         .score-high { --score-color: #34834f; }
